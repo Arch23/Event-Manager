@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -21,14 +22,18 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.viniciusmn.events.Adapter.GuestListAdapter;
+
 import java.util.ArrayList;
+
+import static com.example.viniciusmn.events.Utils.readSharedTheme;
 
 public class manageGuestActivity extends AppCompatActivity {
     //why dont call work to request result?
 
     private ArrayList<String> guestList;
-    private ArrayAdapter<String> adapter;
     private ListView guest_listView;
+    private GuestListAdapter list_adapter;
     private String newName;
 
     private static final int NEW = 0;
@@ -38,6 +43,7 @@ public class manageGuestActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        int theme = readSharedTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_guest);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);//maybe not for this screen
@@ -52,9 +58,8 @@ public class manageGuestActivity extends AppCompatActivity {
         }else{
             guestList = new ArrayList<>();
         }
-
-        adapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,guestList);
-        guest_listView.setAdapter(adapter);
+        list_adapter = new GuestListAdapter(this,guestList,(theme==R.style.AppTheme));
+        guest_listView.setAdapter(list_adapter);
 
         guest_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -69,15 +74,11 @@ public class manageGuestActivity extends AppCompatActivity {
         guest_listView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
             @Override
             public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-                boolean selected = guest_listView.isItemChecked(position);
+//                guest_listView.getChildAt(position).setBackgroundColor(guest_listView.isItemChecked(position)?Color.LTGRAY:Color.TRANSPARENT);
+               // guest_listView.getChildAt(position - guest_listView.getFirstVisiblePosition()).setBackgroundColor(checked?Color.LTGRAY:Color.TRANSPARENT);
 
-                View  view = guest_listView.getChildAt(position);
-
-                if(selected){
-                    view.setBackgroundColor(Color.LTGRAY);
-                }else{
-                    view.setBackgroundColor(Color.TRANSPARENT);
-                }
+                list_adapter.toggleItemSelected(position);
+                list_adapter.notifyDataSetChanged();
 
                 int totalSelected = guest_listView.getCheckedItemCount();
 
@@ -109,31 +110,22 @@ public class manageGuestActivity extends AppCompatActivity {
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.guest_manage_menu_alter:
-                        for(int position = guest_listView.getChildCount();position>=0;position--){
-                            if(guest_listView.isItemChecked(position)){
-                                selectedPosition = position;
-                                getName(ALTER);
-                            }
-                        }
-                        mode.finish();
+                        selectedPosition = list_adapter.getSelectedPositions().get(0);
+                        getName(ALTER);
                         break;
                     case R.id.guest_manage_menu_delete:
                         deleteGuests();
-                        mode.finish();
                         break;
                     default:
                         return false;
                 }
+                mode.finish();
                 return true;
             }
 
             @Override
             public void onDestroyActionMode(ActionMode mode) {
-                for(int position = 0;position<guest_listView.getChildCount();position++){
-                    View view = guest_listView.getChildAt(position);
-
-                    view.setBackgroundColor(Color.TRANSPARENT);
-                }
+                list_adapter.clearItemSelected();
             }
         });
     }
@@ -161,7 +153,7 @@ public class manageGuestActivity extends AppCompatActivity {
     private void addNewGuest(){
         if(!newName.isEmpty()){
                 guestList.add(newName);
-                adapter.notifyDataSetChanged();
+                list_adapter.notifyDataSetChanged();
             }else{
                 Toast.makeText(this, R.string.empty_name_error, Toast.LENGTH_SHORT).show();
             }
@@ -171,19 +163,17 @@ public class manageGuestActivity extends AppCompatActivity {
     private void changeGuest(){
         if(newName != guestList.get(selectedPosition)){
             guestList.set(selectedPosition,newName);
-            adapter.notifyDataSetChanged();
+            list_adapter.notifyDataSetChanged();
         }
 
         selectedPosition = -1;
     }
 
     private void deleteGuests(){
-        for(int position = guest_listView.getChildCount();position>=0;position--){
-            if(guest_listView.isItemChecked(position)){
-                guestList.remove(position);
-            }
+        for(int i : list_adapter.getSelectedPositions()){
+            guestList.remove(i);
         }
-        adapter.notifyDataSetChanged();
+        list_adapter.notifyDataSetChanged();
     }
 
     private void getName(final int MODE){

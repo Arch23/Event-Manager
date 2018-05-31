@@ -1,22 +1,55 @@
 package com.example.viniciusmn.events.Classes;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Event {
+@Entity
+public class Event implements Serializable{
+
+    @PrimaryKey(autoGenerate = true)
+    private int uid;
+
     private String name;
+
     private Date date;
+
     private String place;
+
     private String description;
+
     private ArrayList<String> invited;
 
+    @Ignore
     public Event(String name, Date date, String place, String description, ArrayList<String> invited) {
         this.name = name;
         this.date = date;
         this.place = place;
         this.description = description;
         this.invited = invited;
+    }
+
+    public Event(int uid, String name, Date date, String place, String description, ArrayList<String> invited) {
+        this.uid = uid;
+        this.name = name;
+        this.date = date;
+        this.place = place;
+        this.description = description;
+        this.invited = invited;
+    }
+
+    public int getUid() {
+        return uid;
+    }
+
+    public void setUid(int uid) {
+        this.uid = uid;
     }
 
     public String getName() {
@@ -62,7 +95,8 @@ public class Event {
     @Override
     public String toString() {
         return "Event{" +
-                "name='" + name + '\'' +
+                "uid=" + uid +
+                ", name='" + name + '\'' +
                 ", date=" + date +
                 ", place='" + place + '\'' +
                 ", description='" + description + '\'' +

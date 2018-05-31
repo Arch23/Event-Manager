@@ -3,4 +3,13 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="DarkcolorPrimary">#212121</color>
+    <color name="DarkcolorPrimaryDark">#000000</color>
+    <color name="DarkcolorAccent">#9DFF40</color>
+
+    <color name="CardBackground">#FFFFFF</color>
+    <color name="CardBackgroundSelected">#CCCCCC</color>
+    <color name="DarkCardBackground">#424242</color>
+    <color name="DarkCardBackgroundSelected">#5b5b5b</color>
 </resources>

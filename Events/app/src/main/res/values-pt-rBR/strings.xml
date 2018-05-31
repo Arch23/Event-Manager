@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Gerenciador de Eventos</string>
+    <string name="create">Criar</string>
+    <string name="about">Sobre</string>
+    <string name="save">Salvar</string>
+    <string name="name">Nome</string>
+    <string name="date">Data</string>
+    <string name="place">Lugar</string>
+    <string name="description">Descrição</string>
+    <string name="author_label">Autor</string>
+    <string name="student_record">Registro de Aluno</string>
+    <string name="course_name_label">Curso</string>
+    <string name="course_name">Engenharia de Computação</string>
+    <string name="clear">Limpar</string>
+    <string name="manage_guets">Gerenciar convidados</string>
+    <string name="add">Adicionar</string>
+    <string name="new_guest">Novo convidado</string>
+    <string name="cancel">Cancelar</string>
+    <string name="empty_name_error">Por favor especifique um nome</string>
+    <string name="alter">Alterar nome</string>
+    <string name="delete">deletar</string>
+    <string name="alter_guest_name">Alterar nome do convidado</string>
+    <string name="empty_event_name">Por favor digite um nome</string>
+    <string name="empty_event_date">Por favor digite uma data</string>
+    <string name="empty_evet_location">Por favor digite um lugar</string>
+    <string name="empty_event_description">Por favor digite uma descrição</string>
+    <string name="empty_event_guests">Por favor insira pelo menos um convidado</string>
+    <string name="create_new_title">Novo Evento</string>
+    <string name="create_edit_title">Editar Evento</string>
+    <string name="edit">editar</string>
+    <string name="create_btn_change">alterar</string>
+    <string name="create_btn_create">criar</string>
+    <string name="confirm_dialog_title">Deletar evento?</string>
+    <string name="confirm_dialog_body">Você tem certeza que quer deletar o evento</string>
+    <string name="theme">Tema da aplicação</string>
+    <string name="dark_theme">Escuro</string>
+    <string name="light_theme">Claro</string>
+</resources>

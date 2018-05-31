@@ -1,35 +1,30 @@
 package com.example.viniciusmn.events.DAO;
 
+import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Delete;
+import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
+
 import com.example.viniciusmn.events.Classes.Event;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class EventDAO {
-    private static final EventDAO ourInstance = new EventDAO();
+@Dao
+public interface EventDAO {
+    @Query("SELECT * FROM event")
+    List<Event> getAll();
 
-    public static EventDAO getInstance() {
-        return ourInstance;
-    }
+    @Query("SELECT * FROM event WHERE uid IN (:eventId)")
+    Event getByID(int eventId);
 
-    private EventDAO() {
-        events = new ArrayList<>();
-    }
+    @Insert
+    void insertEvent(Event e);
 
-    private ArrayList<Event> events;
+    @Delete
+    void deleteEvent(Event e);
 
-    public ArrayList<Event> getEvents() {
-        return events;
-    }
-
-    public void setEvents(ArrayList<Event> events) {
-        this.events = events;
-    }
-
-    public void addEvent(Event event){
-        events.add(event);
-    }
-
-    public void deleteEvent(Event event){
-
-    }
+    @Update
+    void updateEvent(Event e);
 }

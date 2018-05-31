@@ -1,32 +1,131 @@
 package com.example.viniciusmn.events;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.viniciusmn.events.Adapter.EventsListAdapter;
 import com.example.viniciusmn.events.Classes.Event;
+import com.example.viniciusmn.events.DAO.EventDatabase;
 
 import java.util.ArrayList;
-import java.util.Calendar;
+
+import static com.example.viniciusmn.events.Utils.readSharedTheme;
 
 public class MainActivity extends AppCompatActivity {
 
-    ListView contentListView;
+    private ListView contentListView;
 
-    EventsListAdapter list_adapter;
+    private EventsListAdapter list_adapter;
+    private ArrayList<Event> events;
+
+    public static final int NEW_EVENT = 0;
+    public static final int ALTER_EVENT = 1;
+    public static final String EVENT_OBJ = "EVENT_OBJ";
+
+    public static final String SHARED_FILE = "com.example.viniciusmn.events.shared_file";
+    public static final String STYLE = "STYLE";
+
+
+    private int selectedPosition = -1;
+    private boolean lightTheme;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        lightTheme = readSharedTheme(this)==R.style.AppTheme;
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         contentListView = findViewById(R.id.contentListView);
-        list_adapter = new EventsListAdapter(this,getEvents());
+
+        contentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                selectedPosition = position;
+                callCreate(true);
+            }
+        });
+
+        contentListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+
+        contentListView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+            @Override
+            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+                list_adapter.toggleItemSelected(position);
+                list_adapter.notifyDataSetChanged();
+
+                int totalSelected = contentListView.getCheckedItemCount();
+
+                if(totalSelected > 0){
+                    mode.setTitle(getResources().getQuantityString(R.plurals.selected,totalSelected,totalSelected));
+                }
+
+                mode.invalidate();
+            }
+
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                mode.getMenuInflater().inflate(R.menu.main_menu_context,menu);
+                return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                menu.getItem(0).setVisible(contentListView.getCheckedItemCount() < 2);
+                return true;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.main_menu_context_edit:
+                        selectedPosition = list_adapter.getSelectedPositions().get(0);
+                        callCreate(true);
+                        break;
+                    case R.id.main_menu_context_delete:
+                        deleteEvents();
+                        break;
+                    default:
+                        return false;
+                }
+                mode.finish();
+                return true;
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+                list_adapter.clearItemSelected();
+            }
+        });
+        populateListView();
+    }
+
+    private void populateListView(){
+        events = new ArrayList<>(EventDatabase.getInstance(this).eventDAO().getAll());
+        list_adapter = new EventsListAdapter(this, events,lightTheme);
         contentListView.setAdapter(list_adapter);
+    }
+
+    private void deleteEvents(){
+        for(int i : list_adapter.getSelectedPositions()){
+            confirmDialog(events.get(i).getName(),events.get(i));
+        }
+    }
+
+    private void deleteEvent(Event event){
+        EventDatabase.getInstance(this).eventDAO().deleteEvent(event);
+        populateListView();
     }
 
     @Override
@@ -39,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.main_menu_add:
-                createActivity.call(this);
+                callCreate();
                 return true;
             case R.id.main_menu_about:
                 aboutActivity.call(this);
@@ -49,27 +148,51 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private ArrayList<Event> getEvents(){
-        ArrayList<Event> events = new ArrayList<>();
+    private void callCreate(){
+        callCreate(false);
+    }
 
-        ArrayList<String> convidados = new ArrayList<>();
-        convidados.add("convidado 1");
-        convidados.add("convidado 2");
-        convidados.add("convidado 3");
-        convidados.add("convidado 4");
-        convidados.add("convidado 5");
+    private void callCreate(boolean edit){
+        Intent intent = new Intent(this,createActivity.class);
 
-        events.add(new Event("name teste 1", Calendar.getInstance().getTime(),"local teste 1","descriçao teste 1",convidados));
-        events.add(new Event("name teste 2", Calendar.getInstance().getTime(),"local teste 2","descriçao teste 2",convidados));
-        events.add(new Event("name teste 3", Calendar.getInstance().getTime(),"local teste 3","descriçao teste 3",convidados));
-        events.add(new Event("name teste 4", Calendar.getInstance().getTime(),"local teste 4","descriçao teste 4",convidados));
-        events.add(new Event("name teste 5", Calendar.getInstance().getTime(),"local teste 5","descriçao teste 5",convidados));
-        events.add(new Event("name teste 6", Calendar.getInstance().getTime(),"local teste 6","descriçao teste 6",convidados));
-        events.add(new Event("name teste 7", Calendar.getInstance().getTime(),"local teste 7","descriçao teste 7",convidados));
-        events.add(new Event("name teste 8", Calendar.getInstance().getTime(),"local teste 8","descriçao teste 8",convidados));
-        events.add(new Event("name teste 9", Calendar.getInstance().getTime(),"local teste 9","descriçao teste 9",convidados));
-        events.add(new Event("name teste 10", Calendar.getInstance().getTime(),"local teste 10","descriçao teste 10",convidados));
+        if(edit){
+            intent.putExtra(EVENT_OBJ,events.get(selectedPosition));
+            startActivityForResult(intent,ALTER_EVENT);
+        }else{
+            startActivityForResult(intent,NEW_EVENT);
+        }
+    }
 
-        return events;
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(resultCode == Activity.RESULT_OK){
+            Bundle bundle = data.getExtras();
+
+            if(bundle != null){
+                Event event = (Event) bundle.getSerializable(EVENT_OBJ);
+                if(requestCode == NEW_EVENT){
+                    EventDatabase.getInstance(this).eventDAO().insertEvent(event);
+                }else{
+                    EventDatabase.getInstance(this).eventDAO().updateEvent(event);
+                    selectedPosition = -1;
+                }
+                populateListView();
+            }
+        }
+    }
+
+    private void confirmDialog(String eventName, final Event event){
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.confirm_dialog_title)
+                .setMessage(getString(R.string.confirm_dialog_body)+" "+eventName+"?")
+                .setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteEvent(event);
+                    }
+                })
+                .setNegativeButton(R.string.cancel, null).show();
     }
 }
