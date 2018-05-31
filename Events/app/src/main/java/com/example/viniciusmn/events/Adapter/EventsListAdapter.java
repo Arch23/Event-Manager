@@ -59,7 +59,7 @@ public class EventsListAdapter extends BaseAdapter{
     }
 
     public void toggleItemSelected(int position){
-        if(selectedPositions.contains(new Integer(position))){
+        if(selectedPositions.contains(position)){
             selectedPositions.remove(new Integer(position));
         }else{
             selectedPositions.add(position);
@@ -81,7 +81,6 @@ public class EventsListAdapter extends BaseAdapter{
         if(convertView == null){
             convertView = inflater.inflate(R.layout.layout_event_item,null);
         }
-//        View view = inflater.inflate(R.layout.layout_event_item,null);
 
         holder.event_name = convertView.findViewById(R.id.event_name);
         holder.event_date = convertView.findViewById(R.id.event_date);
@@ -100,10 +99,13 @@ public class EventsListAdapter extends BaseAdapter{
             holder.event_card.setBackgroundColor(lightTheme?light:dark);
         }
 
-        holder.event_name.setText(eventList.get(position).getName());
-        holder.event_date.setText(dateToString(eventList.get(position).getDate()));
-        holder.event_place.setText(eventList.get(position).getPlace());
-        holder.event_invited.setText(Integer.toString(eventList.get(position).getInvited().size()));
+        Event currentEvent = eventList.get(position);
+        
+        holder.event_name.setText(currentEvent.getName());
+        holder.event_date.setText(dateToString(currentEvent.getDate()));
+        holder.event_place.setText(currentEvent.getPlace());
+
+        holder.event_invited.setText(context.getString(R.string.confirmed,currentEvent.getConfirmedInvited(),currentEvent.getInvitedSize()));
 
         return convertView;
     }

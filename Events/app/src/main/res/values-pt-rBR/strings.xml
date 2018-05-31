@@ -36,4 +36,7 @@
     <string name="theme">Tema da aplicação</string>
     <string name="dark_theme">Escuro</string>
     <string name="light_theme">Claro</string>
+    <string name="edit_guest">Editar convidado</string>
+    <string name="confirmed_question">Confirmado?</string>
+    <string name="confirmed">%d/%d confirmados</string>
 </resources>

@@ -10,19 +10,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.ActionMode;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Checkable;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.viniciusmn.events.Adapter.GuestListAdapter;
+import com.example.viniciusmn.events.Classes.Person;
 
 import java.util.ArrayList;
 
@@ -31,10 +35,11 @@ import static com.example.viniciusmn.events.Utils.readSharedTheme;
 public class manageGuestActivity extends AppCompatActivity {
     //why dont call work to request result?
 
-    private ArrayList<String> guestList;
+    private ArrayList<Person> guestList;
     private ListView guest_listView;
     private GuestListAdapter list_adapter;
     private String newName;
+    private boolean newConfirmed;
 
     private static final int NEW = 0;
     private static final int ALTER = 1;
@@ -54,7 +59,7 @@ public class manageGuestActivity extends AppCompatActivity {
         Bundle bundle = intent.getExtras();
 
         if(bundle != null){
-            guestList = bundle.getStringArrayList(createActivity.GUEST_LIST);
+            guestList = (ArrayList<Person>) bundle.getSerializable(createActivity.GUEST_LIST);
         }else{
             guestList = new ArrayList<>();
         }
@@ -74,9 +79,6 @@ public class manageGuestActivity extends AppCompatActivity {
         guest_listView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
             @Override
             public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-//                guest_listView.getChildAt(position).setBackgroundColor(guest_listView.isItemChecked(position)?Color.LTGRAY:Color.TRANSPARENT);
-               // guest_listView.getChildAt(position - guest_listView.getFirstVisiblePosition()).setBackgroundColor(checked?Color.LTGRAY:Color.TRANSPARENT);
-
                 list_adapter.toggleItemSelected(position);
                 list_adapter.notifyDataSetChanged();
 
@@ -152,7 +154,7 @@ public class manageGuestActivity extends AppCompatActivity {
 
     private void addNewGuest(){
         if(!newName.isEmpty()){
-                guestList.add(newName);
+                guestList.add(new Person(newName,newConfirmed));
                 list_adapter.notifyDataSetChanged();
             }else{
                 Toast.makeText(this, R.string.empty_name_error, Toast.LENGTH_SHORT).show();
@@ -161,8 +163,10 @@ public class manageGuestActivity extends AppCompatActivity {
     }
 
     private void changeGuest(){
-        if(newName != guestList.get(selectedPosition)){
-            guestList.set(selectedPosition,newName);
+        if(newName != guestList.get(selectedPosition).getName()){
+//            guestList.set(selectedPosition,newName);
+            guestList.get(selectedPosition).setName(newName);
+            guestList.get(selectedPosition).setConfirmed(newConfirmed);
             list_adapter.notifyDataSetChanged();
         }
 
@@ -181,23 +185,26 @@ public class manageGuestActivity extends AppCompatActivity {
         if(MODE == NEW){
             builder.setTitle(R.string.new_guest);
         }else{
-            builder.setTitle(R.string.alter_guest_name);
+            builder.setTitle(R.string.edit_guest);
         }
 
-        final EditText input = new EditText(this);
+        View inflatedView = LayoutInflater.from(this).inflate(R.layout.layout_guest_input, null);
 
-        input.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+        final EditText input = inflatedView.findViewById(R.id.guest_editText);
+        final Checkable check = inflatedView.findViewById(R.id.guest_checkBox);
 
         if(MODE == ALTER){
-            input.setText(guestList.get(selectedPosition));
+            input.setText(guestList.get(selectedPosition).getName());
+            check.setChecked(guestList.get(selectedPosition).isConfirmed());
         }
 
-        builder.setView(input);
+        builder.setView(inflatedView);
 
         builder.setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 newName = input.getText().toString();
+                newConfirmed = check.isChecked();
 
                 if(MODE == ALTER){
                     changeGuest();
@@ -221,7 +228,7 @@ public class manageGuestActivity extends AppCompatActivity {
     private void processFinish(){
         Intent intent = new Intent();
 
-        intent.putStringArrayListExtra(createActivity.GUEST_LIST,guestList);
+        intent.putExtra(createActivity.GUEST_LIST,guestList);
 
         setResult(Activity.RESULT_OK,intent);
 

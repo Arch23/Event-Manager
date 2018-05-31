@@ -7,8 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.viniciusmn.events.Classes.Person;
 import com.example.viniciusmn.events.R;
 
 import java.util.ArrayList;
@@ -16,13 +20,13 @@ import java.util.ArrayList;
 public class GuestListAdapter extends BaseAdapter {
 
     private Context context;
-    private ArrayList<String> guestList;
+    private ArrayList<Person> guestList;
     private ArrayList<Integer> selectedPositions;
     private boolean lightTheme;
 
     private static LayoutInflater inflater = null;
 
-    public GuestListAdapter(Context context, ArrayList<String> guestList,boolean lightTheme) {
+    public GuestListAdapter(Context context, ArrayList<Person> guestList,boolean lightTheme) {
         this.context = context;
         this.guestList = guestList;
         this.lightTheme = lightTheme;
@@ -46,7 +50,7 @@ public class GuestListAdapter extends BaseAdapter {
     }
 
     public void toggleItemSelected(int position){
-        if(selectedPositions.contains(new Integer(position))){
+        if(selectedPositions.contains(position)){
             selectedPositions.remove(new Integer(position));
         }else{
             selectedPositions.add(position);
@@ -61,13 +65,35 @@ public class GuestListAdapter extends BaseAdapter {
         selectedPositions.clear();
     }
 
+    public class Holder{
+        TextView guest_name;
+        CheckBox guest_checkListView;
+    }
+
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         if(convertView==null){
             convertView = inflater.inflate(R.layout.layout_guest_item,null);
         }
 
-        ((TextView)convertView.findViewById(R.id.guest_name)).setText(guestList.get(position));
+        Holder holder = new Holder();
+
+        holder.guest_name = convertView.findViewById(R.id.guest_name);
+        holder.guest_checkListView = convertView.findViewById(R.id.guest_checkListView);
+
+        holder.guest_name.setText(guestList.get(position).getName());
+
+        holder.guest_checkListView.setOnCheckedChangeListener(null);
+
+        holder.guest_checkListView.setChecked(guestList.get(position).isConfirmed());
+
+        holder.guest_checkListView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                guestList.get(position).setConfirmed(isChecked);
+                Toast.makeText(context, guestList.get(position).toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
         if(selectedPositions.contains(position)){
             int light = ContextCompat.getColor(context, R.color.CardBackgroundSelected),

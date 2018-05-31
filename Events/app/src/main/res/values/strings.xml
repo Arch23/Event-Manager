@@ -40,6 +40,9 @@
     <string name="dark_theme">Dark</string>
     <string name="light_theme">Light</string>
     <string name="placeholder_text" translatable="false">placeholder</string>
+    <string name="edit_guest">Edit guest</string>
+    <string name="confirmed_question">Confirmed?</string>
+    <string name="confirmed" formatted="false">%d/%d confirmed</string>
     <plurals name="selected">
         <item quantity="one">%d selected</item>
         <item quantity="other">%d selected</item>

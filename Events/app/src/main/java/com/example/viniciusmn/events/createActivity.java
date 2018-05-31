@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.viniciusmn.events.Classes.Event;
+import com.example.viniciusmn.events.Classes.Person;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -40,7 +41,7 @@ public class createActivity extends AppCompatActivity {
     private EditText local_editText;
     private EditText description_editText;
     private Button create_btn;
-    private ArrayList<String> guestList;
+    private ArrayList<Person> guestList;
 
     private int uID;
     private boolean EDIT;
@@ -149,7 +150,7 @@ public class createActivity extends AppCompatActivity {
     public void callManageGuest(View v) {
         Intent intent = new Intent(this, manageGuestActivity.class);
 
-        intent.putStringArrayListExtra(createActivity.GUEST_LIST, guestList);
+        intent.putExtra(createActivity.GUEST_LIST, guestList);
 
         startActivityForResult(intent, GET_GUEST);
     }
@@ -204,7 +205,7 @@ public class createActivity extends AppCompatActivity {
             Bundle bundle = data.getExtras();
 
             if (bundle != null) {
-                guestList = bundle.getStringArrayList(GUEST_LIST);
+                guestList = (ArrayList<Person>) bundle.getSerializable(GUEST_LIST);
             }
         }
     }

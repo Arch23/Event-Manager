@@ -2,6 +2,10 @@ package com.example.viniciusmn.events.DAO;
 
 import android.arch.persistence.room.TypeConverter;
 
+import com.example.viniciusmn.events.Classes.Person;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -14,19 +18,15 @@ import static com.example.viniciusmn.events.Utils.stringToDate;
 
 public class Converters {
     @TypeConverter
-    public static ArrayList<String> fromStringGuests(String value){
-        String[] splited = value.split(",");
-        return new ArrayList<>(Arrays.asList(splited));
+    public static ArrayList<Person> fromJSONGuests(String value){
+        Type listType = new TypeToken<ArrayList<Person>>() {}.getType();
+        return new Gson().fromJson(value,listType);
     }
 
 
     @TypeConverter
-    public static String fromArrayListGuests(ArrayList<String> list){
-        String result = "";
-        for(String s : list){
-            result += s+",";
-        }
-        return result.substring(0,result.length()-1);
+    public static String fromArrayListGuests(ArrayList<Person> list){
+        return new Gson().toJson(list);
     }
 
     @TypeConverter

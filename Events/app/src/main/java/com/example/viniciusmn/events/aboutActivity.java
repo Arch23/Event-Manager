@@ -10,6 +10,8 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import java.util.Objects;
+
 public class aboutActivity extends AppCompatActivity {
 
     private Switch theme_switch;
@@ -65,7 +67,7 @@ public class aboutActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_about);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         theme_switch = findViewById(R.id.theme_switch);
         theme_textView = findViewById(R.id.theme_textView);

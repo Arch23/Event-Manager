@@ -24,10 +24,10 @@ public class Event implements Serializable{
 
     private String description;
 
-    private ArrayList<String> invited;
+    private ArrayList<Person> invited;
 
     @Ignore
-    public Event(String name, Date date, String place, String description, ArrayList<String> invited) {
+    public Event(String name, Date date, String place, String description, ArrayList<Person> invited) {
         this.name = name;
         this.date = date;
         this.place = place;
@@ -35,7 +35,7 @@ public class Event implements Serializable{
         this.invited = invited;
     }
 
-    public Event(int uid, String name, Date date, String place, String description, ArrayList<String> invited) {
+    public Event(int uid, String name, Date date, String place, String description, ArrayList<Person> invited) {
         this.uid = uid;
         this.name = name;
         this.date = date;
@@ -84,12 +84,20 @@ public class Event implements Serializable{
         this.description = description;
     }
 
-    public ArrayList<String> getInvited() {
+    public ArrayList<Person> getInvited() {
         return invited;
     }
 
-    public void setInvited(ArrayList<String> invited) {
+    public void setInvited(ArrayList<Person> invited) {
         this.invited = invited;
+    }
+
+    public int getInvitedSize(){
+        return invited.size();
+    }
+
+    public int getConfirmedInvited(){
+        return (int) invited.stream().filter(el -> el.isConfirmed()).count();
     }
 
     @Override
