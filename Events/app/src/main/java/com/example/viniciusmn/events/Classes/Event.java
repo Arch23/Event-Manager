@@ -4,6 +4,8 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.graphics.Bitmap;
+import android.net.Uri;
 
 import java.io.Serializable;
 import java.text.DateFormat;
@@ -26,22 +28,26 @@ public class Event implements Serializable{
 
     private ArrayList<Person> invited;
 
+    private String imageURIString;
+
     @Ignore
-    public Event(String name, Date date, String place, String description, ArrayList<Person> invited) {
+    public Event(String name, Date date, String place, String description, ArrayList<Person> invited,String imageURIString) {
         this.name = name;
         this.date = date;
         this.place = place;
         this.description = description;
         this.invited = invited;
+        this.imageURIString = imageURIString;
     }
 
-    public Event(int uid, String name, Date date, String place, String description, ArrayList<Person> invited) {
+    public Event(int uid, String name, Date date, String place, String description, ArrayList<Person> invited, String imageURIString) {
         this.uid = uid;
         this.name = name;
         this.date = date;
         this.place = place;
         this.description = description;
         this.invited = invited;
+        this.imageURIString = imageURIString;
     }
 
     public int getUid() {
@@ -98,6 +104,18 @@ public class Event implements Serializable{
 
     public int getConfirmedInvited(){
         return (int) invited.stream().filter(el -> el.isConfirmed()).count();
+    }
+
+    public String getImageURIString() {
+        return imageURIString;
+    }
+
+    public void setImageURIString(String imageURIString) {
+        this.imageURIString = imageURIString;
+    }
+
+    public Uri getImageURI(){
+        return Uri.parse(imageURIString);
     }
 
     @Override

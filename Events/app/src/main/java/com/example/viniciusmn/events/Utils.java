@@ -1,10 +1,21 @@
 package com.example.viniciusmn.events;
 
 import android.app.TaskStackBuilder;
+import android.arch.persistence.room.TypeConverter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.net.Uri;
+import android.util.Base64;
+import android.view.View;
+import android.widget.ImageView;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -26,5 +37,27 @@ public abstract class Utils {
         int theme = shared.getInt(MainActivity.STYLE,R.style.AppTheme);
         ctx.setTheme(theme);
         return theme;
+    }
+
+    public static Bitmap getBitmapFromURI(Context ctx,Uri imageUri){
+        try {
+            InputStream imageStream = ctx.getContentResolver().openInputStream(imageUri);
+            return BitmapFactory.decodeStream(imageStream);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static void setTopCrop(View view,int imageviewID){
+        ImageView iview = view.findViewById(imageviewID);
+        Matrix matrix = iview.getImageMatrix();
+        float imageW = iview.getDrawable().getIntrinsicWidth();
+        int screenW = view.getResources().getDisplayMetrics().widthPixels;
+        float scaleRatio = screenW/imageW;
+
+        matrix.postScale(scaleRatio,scaleRatio);
+        iview.setImageMatrix(matrix);
+
     }
 }

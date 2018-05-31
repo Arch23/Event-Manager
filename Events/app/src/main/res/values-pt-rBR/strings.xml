@@ -39,4 +39,7 @@
     <string name="edit_guest">Editar convidado</string>
     <string name="confirmed_question">Confirmado?</string>
     <string name="confirmed">%d/%d confirmados</string>
+    <string name="app_description">"Aplicativo de gerenciamento de eventos, onde é possível cadastrar eventos, guardando o nome, local, data, descrição e uma lista de convidados.É possível também colocar uma foto opcional para o evento. Com o evento criado é possível editar todos os dados e marcar os convidados que confirmaram presença. "</string>
+    <string name="select_image">Selecionar imagem</string>
+    <string name="event_image">Imagem do evento</string>
 </resources>

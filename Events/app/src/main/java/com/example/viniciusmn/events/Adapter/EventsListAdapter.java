@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.viniciusmn.events.Classes.Event;
@@ -17,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import static com.example.viniciusmn.events.Utils.dateToString;
+import static com.example.viniciusmn.events.Utils.getBitmapFromURI;
+import static com.example.viniciusmn.events.Utils.setTopCrop;
 
 public class EventsListAdapter extends BaseAdapter{
 
@@ -55,6 +58,7 @@ public class EventsListAdapter extends BaseAdapter{
         TextView event_date;
         TextView event_place;
         TextView event_invited;
+        ImageView event_imageView;
         View event_card;
     }
 
@@ -87,6 +91,7 @@ public class EventsListAdapter extends BaseAdapter{
         holder.event_place = convertView.findViewById(R.id.event_place);
         holder.event_invited = convertView.findViewById(R.id.event_invited);
         holder.event_card = convertView.findViewById(R.id.card_view);
+        holder.event_imageView = convertView.findViewById(R.id.event_imageView);
 
 
         if(selectedPositions.contains(position)){
@@ -100,7 +105,16 @@ public class EventsListAdapter extends BaseAdapter{
         }
 
         Event currentEvent = eventList.get(position);
-        
+
+        if(currentEvent.getImageURIString().isEmpty()){
+            holder.event_imageView.setVisibility(View.GONE);
+            holder.event_imageView.setImageDrawable(null);
+        }else{
+            holder.event_imageView.setImageBitmap(getBitmapFromURI(context,currentEvent.getImageURI()));
+            holder.event_imageView.setVisibility(View.VISIBLE);
+//            setTopCrop(convertView,R.id.event_imageView);
+        }
+
         holder.event_name.setText(currentEvent.getName());
         holder.event_date.setText(dateToString(currentEvent.getDate()));
         holder.event_place.setText(currentEvent.getPlace());

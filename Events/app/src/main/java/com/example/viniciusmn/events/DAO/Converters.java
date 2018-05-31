@@ -1,11 +1,16 @@
 package com.example.viniciusmn.events.DAO;
 
 import android.arch.persistence.room.TypeConverter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.util.Base64;
 
 import com.example.viniciusmn.events.Classes.Person;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -43,4 +48,14 @@ public class Converters {
     public static String fromDateDate(Date date){
         return dateToString(date);
     }
+//
+//    @TypeConverter
+//    public static Uri fromStringUri(String uri){
+//        return Uri.parse(uri);
+//    }
+//
+//    @TypeConverter
+//    public static String fromUriString(Uri uri){
+//        return uri.toString();
+//    }
 }

@@ -2,31 +2,33 @@ package com.example.viniciusmn.events;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ListView;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.viniciusmn.events.Classes.Event;
 import com.example.viniciusmn.events.Classes.Person;
 
-import java.text.DateFormat;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
 import static com.example.viniciusmn.events.Utils.dateToString;
+import static com.example.viniciusmn.events.Utils.getBitmapFromURI;
 import static com.example.viniciusmn.events.Utils.readSharedTheme;
 import static com.example.viniciusmn.events.Utils.stringToDate;
 
@@ -34,16 +36,19 @@ public class createActivity extends AppCompatActivity {
 
     public static final String GUEST_LIST = "GUEST_LIST";
     public static final int GET_GUEST = 1;
+    public static final int RESULT_LOAD_IMAGE = 0;
 
     private Calendar myCalendar = Calendar.getInstance();
     private EditText date_editText;
     private EditText name_editText;
     private EditText local_editText;
     private EditText description_editText;
+    private ImageView imageView;
     private Button create_btn;
     private ArrayList<Person> guestList;
 
     private int uID;
+    private Uri imageUri;
     private boolean EDIT;
 
     private DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
@@ -70,6 +75,8 @@ public class createActivity extends AppCompatActivity {
         local_editText = findViewById(R.id.local_editText);
         description_editText = findViewById(R.id.description_editText);
         create_btn = findViewById(R.id.create_btn);
+        imageView = findViewById(R.id.imageView);
+        imageUri = null;
         guestList = new ArrayList<>();
 
         Intent intent = getIntent();
@@ -95,6 +102,12 @@ public class createActivity extends AppCompatActivity {
         description_editText.setText(event.getDescription());
         guestList = event.getInvited();
         uID = event.getUid();
+        imageUri = event.getImageURI();
+        if(event.getImageURIString().isEmpty()){
+            hideImageView();
+        }else{
+            setImage();
+        }
     }
 
     @Override
@@ -120,9 +133,9 @@ public class createActivity extends AppCompatActivity {
             Date date = stringToDate(date_editText.getText().toString());
             Event newEvent;
             if (EDIT) {
-                newEvent = new Event(uID, name_editText.getText().toString(), date, local_editText.getText().toString(), description_editText.getText().toString(), guestList);
+                newEvent = new Event(uID, name_editText.getText().toString(), date, local_editText.getText().toString(), description_editText.getText().toString(), guestList,imageUri==null?"":imageUri.toString());
             } else {
-                newEvent = new Event(name_editText.getText().toString(), date, local_editText.getText().toString(), description_editText.getText().toString(), guestList);
+                newEvent = new Event(name_editText.getText().toString(), date, local_editText.getText().toString(), description_editText.getText().toString(), guestList,imageUri==null?"":imageUri.toString());
             }
             return newEvent;
         } catch (ParseException e) {
@@ -133,6 +146,22 @@ public class createActivity extends AppCompatActivity {
 
     public void save(View v) {
         processFinishAndSave();
+    }
+
+    public void getImage(View v){
+        Intent photoIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        photoIntent.setType("image/*");
+        startActivityForResult(photoIntent,RESULT_LOAD_IMAGE);
+    }
+
+    public void unsetImage(View v){
+        hideImageView();
+    }
+
+    public void hideImageView(){
+        imageView.setVisibility(View.GONE);
+        imageUri = null;
+        imageView.setImageDrawable(null);
     }
 
     public void clear(View v) {
@@ -192,6 +221,11 @@ public class createActivity extends AppCompatActivity {
         }
     }
 
+    private void setImage(){
+        imageView.setImageBitmap(getBitmapFromURI(this,imageUri));
+        imageView.setVisibility(View.VISIBLE);
+    }
+
     @Override
     public void onBackPressed() {
         finish();
@@ -207,6 +241,9 @@ public class createActivity extends AppCompatActivity {
             if (bundle != null) {
                 guestList = (ArrayList<Person>) bundle.getSerializable(GUEST_LIST);
             }
+        }else if(requestCode == RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK){
+            imageUri = data.getData();
+            setImage();
         }
     }
 
