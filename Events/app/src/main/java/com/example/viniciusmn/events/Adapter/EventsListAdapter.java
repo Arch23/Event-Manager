@@ -13,13 +13,10 @@ import com.example.viniciusmn.events.Classes.Event;
 import com.example.viniciusmn.events.MainActivity;
 import com.example.viniciusmn.events.R;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
-import static com.example.viniciusmn.events.Utils.dateToString;
-import static com.example.viniciusmn.events.Utils.getBitmapFromURI;
-import static com.example.viniciusmn.events.Utils.setTopCrop;
+import static com.example.viniciusmn.events.Utils.Misc.dateToString;
+import static com.example.viniciusmn.events.Utils.Misc.getBitmapFromURI;
 
 public class EventsListAdapter extends BaseAdapter{
 

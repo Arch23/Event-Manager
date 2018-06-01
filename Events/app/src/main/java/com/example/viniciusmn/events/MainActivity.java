@@ -2,16 +2,13 @@ package com.example.viniciusmn.events;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.viniciusmn.events.Adapter.EventsListAdapter;
@@ -20,7 +17,7 @@ import com.example.viniciusmn.events.DAO.EventDatabase;
 
 import java.util.ArrayList;
 
-import static com.example.viniciusmn.events.Utils.readSharedTheme;
+import static com.example.viniciusmn.events.Utils.Misc.readSharedTheme;
 
 public class MainActivity extends AppCompatActivity {
 

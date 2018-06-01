@@ -2,24 +2,16 @@ package com.example.viniciusmn.events;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Checkable;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -30,7 +22,7 @@ import com.example.viniciusmn.events.Classes.Person;
 
 import java.util.ArrayList;
 
-import static com.example.viniciusmn.events.Utils.readSharedTheme;
+import static com.example.viniciusmn.events.Utils.Misc.readSharedTheme;
 
 public class manageGuestActivity extends AppCompatActivity {
     //why dont call work to request result?

@@ -1,25 +1,18 @@
 package com.example.viniciusmn.events.DAO;
 
 import android.arch.persistence.room.TypeConverter;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.util.Base64;
 
 import com.example.viniciusmn.events.Classes.Person;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Type;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 
-import static com.example.viniciusmn.events.Utils.dateToString;
-import static com.example.viniciusmn.events.Utils.stringToDate;
+import static com.example.viniciusmn.events.Utils.Misc.dateToString;
+import static com.example.viniciusmn.events.Utils.Misc.stringToDate;
 
 public class Converters {
     @TypeConverter

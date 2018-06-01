@@ -1,4 +1,4 @@
-package com.example.viniciusmn.events;
+package com.example.viniciusmn.events.Utils;
 
 import android.app.TaskStackBuilder;
 import android.arch.persistence.room.TypeConverter;
@@ -15,6 +15,9 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import com.example.viniciusmn.events.MainActivity;
+import com.example.viniciusmn.events.R;
+
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -22,7 +25,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public abstract class Utils {
+public abstract class Misc {
     public static String dateToString(Date date){
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         return sdf.format(date);
@@ -36,7 +39,7 @@ public abstract class Utils {
 
     public static int readSharedTheme(Context ctx){
         SharedPreferences shared = ctx.getSharedPreferences(MainActivity.SHARED_FILE, Context.MODE_PRIVATE);
-        int theme = shared.getInt(MainActivity.STYLE,R.style.AppTheme);
+        int theme = shared.getInt(MainActivity.STYLE, R.style.AppTheme);
         ctx.setTheme(theme);
         return theme;
     }
@@ -96,5 +99,10 @@ public abstract class Utils {
             }
         });
         v.startAnimation(anim_out);
+    }
+
+    public static Bitmap base64ToBitmap(String base64Str){
+        byte[] decodedString = Base64.decode(base64Str,Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(decodedString,0,decodedString.length);
     }
 }

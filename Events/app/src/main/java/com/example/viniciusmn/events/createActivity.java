@@ -4,18 +4,14 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
-import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -25,18 +21,16 @@ import android.widget.Toast;
 import com.example.viniciusmn.events.Classes.Event;
 import com.example.viniciusmn.events.Classes.Person;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import static com.example.viniciusmn.events.Utils.dateToString;
-import static com.example.viniciusmn.events.Utils.getBitmapFromURI;
-import static com.example.viniciusmn.events.Utils.imageViewAnimatedChange;
-import static com.example.viniciusmn.events.Utils.readSharedTheme;
-import static com.example.viniciusmn.events.Utils.stringToDate;
+import static com.example.viniciusmn.events.Utils.Misc.dateToString;
+import static com.example.viniciusmn.events.Utils.Misc.getBitmapFromURI;
+import static com.example.viniciusmn.events.Utils.Misc.imageViewAnimatedChange;
+import static com.example.viniciusmn.events.Utils.Misc.readSharedTheme;
+import static com.example.viniciusmn.events.Utils.Misc.stringToDate;
 
 public class createActivity extends AppCompatActivity {
 
