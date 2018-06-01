@@ -103,7 +103,7 @@ public class Event implements Serializable{
     }
 
     public int getConfirmedInvited(){
-        return (int) invited.stream().filter(el -> el.isConfirmed()).count();
+        return (int) invited.stream().filter(Person::isConfirmed).count();
     }
 
     public String getImageURIString() {

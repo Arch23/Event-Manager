@@ -20,7 +20,6 @@
     <string name="empty_name_error">Por favor especifique um nome</string>
     <string name="alter">Alterar nome</string>
     <string name="delete">deletar</string>
-    <string name="alter_guest_name">Alterar nome do convidado</string>
     <string name="empty_event_name">Por favor digite um nome</string>
     <string name="empty_event_date">Por favor digite uma data</string>
     <string name="empty_evet_location">Por favor digite um lugar</string>
@@ -42,4 +41,8 @@
     <string name="app_description">"Aplicativo de gerenciamento de eventos, onde é possível cadastrar eventos, guardando o nome, local, data, descrição e uma lista de convidados.É possível também colocar uma foto opcional para o evento. Com o evento criado é possível editar todos os dados e marcar os convidados que confirmaram presença. "</string>
     <string name="select_image">Selecionar imagem</string>
     <string name="event_image">Imagem do evento</string>
+    <string name="add_image">Adicionar imagem</string>
+    <string name="delete_event">Deletar imagem</string>
+    <string name="event_saved">Evento salvado</string>
+    <string name="event_created">Evento criado</string>
 </resources>

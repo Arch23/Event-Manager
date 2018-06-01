@@ -66,12 +66,9 @@ public class manageGuestActivity extends AppCompatActivity {
         list_adapter = new GuestListAdapter(this,guestList,(theme==R.style.AppTheme));
         guest_listView.setAdapter(list_adapter);
 
-        guest_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selectedPosition = position;
-                getName(ALTER);
-            }
+        guest_listView.setOnItemClickListener((parent, view, position, id) -> {
+            selectedPosition = position;
+            getName(ALTER);
         });
 
         guest_listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
@@ -200,27 +197,19 @@ public class manageGuestActivity extends AppCompatActivity {
 
         builder.setView(inflatedView);
 
-        builder.setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                newName = input.getText().toString();
-                newConfirmed = check.isChecked();
+        builder.setPositiveButton(getString(R.string.OK), (dialog, which) -> {
+            newName = input.getText().toString();
+            newConfirmed = check.isChecked();
 
-                if(MODE == ALTER){
-                    changeGuest();
-                }else{
-                    addNewGuest();
-                }
-                dialog.dismiss();
+            if(MODE == ALTER){
+                changeGuest();
+            }else{
+                addNewGuest();
             }
+            dialog.dismiss();
         });
 
-        builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
+        builder.setNegativeButton(getString(R.string.cancel), (dialog, which) -> dialog.cancel());
 
         builder.show();
     }

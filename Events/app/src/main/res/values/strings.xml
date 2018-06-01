@@ -23,7 +23,6 @@
     <string name="empty_name_error">Please enter a name</string>
     <string name="alter">Alter name</string>
     <string name="delete">delete</string>
-    <string name="alter_guest_name">Alter guest name</string>
     <string name="empty_event_name">Please enter a name</string>
     <string name="empty_event_date">Please enter a date</string>
     <string name="empty_evet_location">Please enter a place</string>
@@ -44,7 +43,11 @@
     <string name="confirmed_question">Confirmed?</string>
     <string name="confirmed" formatted="false">%d/%d confirmed</string>
     <string name="select_image">Select image</string>
-    <string name="event_image">imagem do evento</string>
+    <string name="event_image">event image</string>
+    <string name="add_image">Add image</string>
+    <string name="delete_event">Delete image</string>
+    <string name="event_saved">Event saved</string>
+    <string name="event_created">Event created</string>
     <plurals name="selected">
         <item quantity="one">%d selected</item>
         <item quantity="other">%d selected</item>

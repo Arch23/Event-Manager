@@ -49,12 +49,9 @@ public class MainActivity extends AppCompatActivity {
 
         contentListView = findViewById(R.id.contentListView);
 
-        contentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selectedPosition = position;
-                callCreate(true);
-            }
+        contentListView.setOnItemClickListener((parent, view, position, id) -> {
+            selectedPosition = position;
+            callCreate(true);
         });
 
         contentListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
@@ -187,12 +184,7 @@ public class MainActivity extends AppCompatActivity {
         new AlertDialog.Builder(this)
                 .setTitle(R.string.confirm_dialog_title)
                 .setMessage(getString(R.string.confirm_dialog_body)+" "+eventName+"?")
-                .setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        deleteEvent(event);
-                    }
-                })
+                .setPositiveButton(R.string.OK, (dialog, which) -> deleteEvent(event))
                 .setNegativeButton(R.string.cancel, null).show();
     }
 }

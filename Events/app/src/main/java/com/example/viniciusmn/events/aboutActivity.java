@@ -14,8 +14,6 @@ import java.util.Objects;
 
 public class aboutActivity extends AppCompatActivity {
 
-    private Switch theme_switch;
-    private TextView theme_textView;
     private int themeId;
 
     public static void call(Context context){
@@ -69,19 +67,16 @@ public class aboutActivity extends AppCompatActivity {
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        theme_switch = findViewById(R.id.theme_switch);
-        theme_textView = findViewById(R.id.theme_textView);
+        Switch theme_switch = findViewById(R.id.theme_switch);
+        TextView theme_textView = findViewById(R.id.theme_textView);
 
         theme_switch.setChecked(themeId==R.style.AppThemeDark);
         theme_textView.setText(theme_switch.isChecked()?R.string.dark_theme:R.string.light_theme);
 
-        theme_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                themeId = isChecked?R.style.AppThemeDark:R.style.AppTheme;
-                writeSharedTheme();
-                changeTheme(false,themeId);
-            }
+        theme_switch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            themeId = isChecked?R.style.AppThemeDark:R.style.AppTheme;
+            writeSharedTheme();
+            changeTheme(false,themeId);
         });
     }
 }
