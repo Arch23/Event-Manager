@@ -77,6 +77,20 @@ public class createActivity extends AppCompatActivity {
         description_editText = findViewById(R.id.description_editText);
         create_btn = findViewById(R.id.create_btn);
         imageView = findViewById(R.id.imageView);
+        imageView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if(imageUri != null){
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_VIEW);
+                    intent.setDataAndType(imageUri,"image/*");
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    startActivity(intent);
+                }
+
+                return true;
+            }
+        });
         imageUri = null;
         guestList = new ArrayList<>();
 

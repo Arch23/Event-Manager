@@ -120,8 +120,8 @@ public class EventsListAdapter extends BaseAdapter{
             if(transition){
                 imageViewAnimatedChange(context,i,b);
             }else{
-                i.setImageBitmap(b);
                 i.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                i.setImageBitmap(b);
 
             }
         }
@@ -163,6 +163,7 @@ public class EventsListAdapter extends BaseAdapter{
         }
 
         Event currentEvent = eventList.get(position);
+
 
         if(currentEvent.getImageURIString().isEmpty()){
             holder.event_imageView.setVisibility(View.GONE);
@@ -206,7 +207,7 @@ public class EventsListAdapter extends BaseAdapter{
             if(bitmap != null){
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
-                bitmap.compress(Bitmap.CompressFormat.JPEG,60,stream);
+                bitmap.compress(Bitmap.CompressFormat.JPEG,20,stream);
 
                 byte[] byteArray = stream.toByteArray();
                 bitmap = BitmapFactory.decodeByteArray(byteArray,0,byteArray.length);

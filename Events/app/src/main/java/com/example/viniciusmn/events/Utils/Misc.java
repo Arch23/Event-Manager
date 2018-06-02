@@ -61,27 +61,38 @@ public abstract class Misc {
     public static void imageViewAnimatedChange(Context c, final ImageView v, final Bitmap new_image) {
         final Animation anim_out = AnimationUtils.loadAnimation(c, android.R.anim.fade_out);
         final Animation anim_in  = AnimationUtils.loadAnimation(c, android.R.anim.fade_in);
-        anim_out.setAnimationListener(new Animation.AnimationListener()
-        {
-            @Override public void onAnimationStart(Animation animation) {}
-            @Override public void onAnimationRepeat(Animation animation) {}
-            @Override public void onAnimationEnd(Animation animation)
-            {
-                if(new_image!=null){
-                    v.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    v.setImageBitmap(new_image);
-                }else{
-                    v.setScaleType(ImageView.ScaleType.CENTER);
-                    v.setImageDrawable(c.getDrawable(android.R.drawable.ic_menu_report_image));
-                }
-                anim_in.setAnimationListener(new Animation.AnimationListener() {
-                    @Override public void onAnimationStart(Animation animation) {}
-                    @Override public void onAnimationRepeat(Animation animation) {}
-                    @Override public void onAnimationEnd(Animation animation) {}
-                });
-                v.startAnimation(anim_in);
-            }
-        });
-        v.startAnimation(anim_out);
+        anim_in.setDuration(100);
+        anim_out.setDuration(100);
+        if(new_image!=null){
+            v.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            v.setImageBitmap(new_image);
+        }else{
+            v.setScaleType(ImageView.ScaleType.CENTER);
+            v.setImageDrawable(c.getDrawable(android.R.drawable.ic_menu_report_image));
+        }
+        v.startAnimation(anim_in);
+
+//        anim_out.setAnimationListener(new Animation.AnimationListener()
+//        {
+//            @Override public void onAnimationStart(Animation animation) {}
+//            @Override public void onAnimationRepeat(Animation animation) {}
+//            @Override public void onAnimationEnd(Animation animation)
+//            {
+//                if(new_image!=null){
+//                    v.setScaleType(ImageView.ScaleType.CENTER_CROP);
+//                    v.setImageBitmap(new_image);
+//                }else{
+//                    v.setScaleType(ImageView.ScaleType.CENTER);
+//                    v.setImageDrawable(c.getDrawable(android.R.drawable.ic_menu_report_image));
+//                }
+//                anim_in.setAnimationListener(new Animation.AnimationListener() {
+//                    @Override public void onAnimationStart(Animation animation) {}
+//                    @Override public void onAnimationRepeat(Animation animation) {}
+//                    @Override public void onAnimationEnd(Animation animation) {}
+//                });
+//                v.startAnimation(anim_in);
+//            }
+//        });
+//        v.startAnimation(anim_out);
     }
 }
