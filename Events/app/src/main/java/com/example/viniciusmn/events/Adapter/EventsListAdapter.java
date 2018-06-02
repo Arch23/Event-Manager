@@ -20,10 +20,13 @@ import com.example.viniciusmn.events.MainActivity;
 import com.example.viniciusmn.events.R;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import static com.example.viniciusmn.events.Utils.Misc.dateToString;
-import static com.example.viniciusmn.events.Utils.Misc.getBitmapFromURI;
+import static com.example.viniciusmn.events.Utils.Misc.getBitmapFromURIResized;
 import static com.example.viniciusmn.events.Utils.Misc.imageViewAnimatedChange;
 
 public class EventsListAdapter extends BaseAdapter{
@@ -114,8 +117,10 @@ public class EventsListAdapter extends BaseAdapter{
 
     private void setBitmap(Bitmap b, ImageView i,boolean transition){
         if(b==null){
-            i.setScaleType(ImageView.ScaleType.CENTER);
-            i.setImageResource(android.R.drawable.ic_menu_report_image);
+            i.setVisibility(View.GONE);
+            i.setImageDrawable(null);
+//            i.setScaleType(ImageView.ScaleType.CENTER);
+//            i.setImageResource(android.R.drawable.ic_menu_report_image);
         }else{
             if(transition){
                 imageViewAnimatedChange(context,i,b);
@@ -141,7 +146,7 @@ public class EventsListAdapter extends BaseAdapter{
         Holder holder = new Holder();
 
         if(convertView == null){
-            convertView = inflater.inflate(R.layout.layout_event_item,null);
+            convertView = inflater.inflate(R.layout.layout_event_item,parent,false);
         }
 
         holder.event_name = convertView.findViewById(R.id.event_name);
@@ -177,12 +182,12 @@ public class EventsListAdapter extends BaseAdapter{
         holder.event_date.setText(dateToString(currentEvent.getDate()));
         holder.event_place.setText(currentEvent.getPlace());
 
-        holder.event_invited.setText(context.getString(R.string.confirmed,currentEvent.getConfirmedInvited(),currentEvent.getInvitedSize()));
+        holder.event_invited.setText(String.format(context.getResources().getString(R.string.confirmed),currentEvent.getConfirmedInvited(),currentEvent.getInvitedSize()));
 
         return convertView;
     }
 
-    class BitmapWorkerTask extends AsyncTask<Integer,Void,Void> {
+    private class BitmapWorkerTask extends AsyncTask<Integer,Void,Void> {
 
         private ImageView imageV;
         private Context ctx;
@@ -198,20 +203,12 @@ public class EventsListAdapter extends BaseAdapter{
         @Override
         protected void onPostExecute(Void aVoid) {
             setBitmap(bitmap,imageV,true);
-            super.onPostExecute(aVoid);
         }
 
         @Override
         protected Void doInBackground(Integer... integers) {
-            Bitmap bitmap = getBitmapFromURI(ctx,imageUri);
+            Bitmap bitmap = getBitmapFromURIResized(ctx,imageUri,200,200);
             if(bitmap != null){
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-
-                bitmap.compress(Bitmap.CompressFormat.JPEG,20,stream);
-
-                byte[] byteArray = stream.toByteArray();
-                bitmap = BitmapFactory.decodeByteArray(byteArray,0,byteArray.length);
-
                 addBitmapToMemoryCache(String.valueOf(integers[0]),bitmap);
             }
             this.bitmap = bitmap;

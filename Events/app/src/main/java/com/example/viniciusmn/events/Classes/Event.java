@@ -6,6 +6,7 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 
 import java.io.Serializable;
 import java.text.DateFormat;
@@ -103,7 +104,17 @@ public class Event implements Serializable{
     }
 
     public int getConfirmedInvited(){
-        return (int) invited.stream().filter(Person::isConfirmed).count();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return (int) invited.stream().filter(Person::isConfirmed).count();
+        }else{
+            long count = 0L;
+            for (Person person : invited) {
+                if (person.isConfirmed()) {
+                    count++;
+                }
+            }
+            return (int) count;
+        }
     }
 
     public String getImageURIString() {

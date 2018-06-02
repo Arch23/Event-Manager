@@ -3,6 +3,7 @@ package com.example.viniciusmn.events;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.ActionMode;
@@ -32,6 +33,7 @@ public class manageGuestActivity extends AppCompatActivity {
     private GuestListAdapter list_adapter;
     private String newName;
     private boolean newConfirmed;
+    private FloatingActionButton floatingAddBtn;
 
     private static final int NEW = 0;
     private static final int ALTER = 1;
@@ -43,8 +45,11 @@ public class manageGuestActivity extends AppCompatActivity {
         int theme = readSharedTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_guest);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);//maybe not for this screen
+
+        setTitle(R.string.manage_guets);
+
         guest_listView = findViewById(R.id.guest_listView);
+        floatingAddBtn = findViewById(R.id.floatingAddBtn);
 
         Intent intent = getIntent();
 
@@ -84,6 +89,7 @@ public class manageGuestActivity extends AppCompatActivity {
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
                 MenuInflater inflater = mode.getMenuInflater();
                 inflater.inflate(R.menu.guest_manage_menu,menu);
+                floatingAddBtn.setVisibility(View.GONE);
                 return true;
             }
 
@@ -117,6 +123,7 @@ public class manageGuestActivity extends AppCompatActivity {
             @Override
             public void onDestroyActionMode(ActionMode mode) {
                 list_adapter.clearItemSelected();
+                floatingAddBtn.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -127,12 +134,13 @@ public class manageGuestActivity extends AppCompatActivity {
         return true;
     }
 
+    public void callAdd(View v){
+        getName(NEW);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case R.id.guest_menu_add:
-                getName(NEW);
-                return true;
             case R.id.guest_menu_back:
                 processFinish();
                 return true;
@@ -177,7 +185,10 @@ public class manageGuestActivity extends AppCompatActivity {
             builder.setTitle(R.string.edit_guest);
         }
 
-        View inflatedView = LayoutInflater.from(this).inflate(R.layout.layout_guest_input, null);
+
+
+//        View inflatedView = LayoutInflater.from(this).inflate(R.layout.layout_guest_input, null);
+        View inflatedView = View.inflate(this,R.layout.layout_guest_input,null);
 
         final EditText input = inflatedView.findViewById(R.id.guest_editText);
         final Checkable check = inflatedView.findViewById(R.id.guest_checkBox);

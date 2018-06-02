@@ -73,7 +73,7 @@ public class GuestListAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         if(convertView==null){
-            convertView = inflater.inflate(R.layout.layout_guest_item,null);
+            convertView = inflater.inflate(R.layout.layout_guest_item,parent,false);
         }
 
         Holder holder = new Holder();
@@ -89,7 +89,6 @@ public class GuestListAdapter extends BaseAdapter {
 
         holder.guest_checkListView.setOnCheckedChangeListener((buttonView, isChecked) -> {
             guestList.get(position).setConfirmed(isChecked);
-            Toast.makeText(context, guestList.get(position).toString(), Toast.LENGTH_SHORT).show();
         });
 
         if(selectedPositions.contains(position)){

@@ -3,9 +3,12 @@ package com.example.viniciusmn.events;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,7 +32,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import static com.example.viniciusmn.events.Utils.Misc.dateToString;
-import static com.example.viniciusmn.events.Utils.Misc.getBitmapFromURI;
+import static com.example.viniciusmn.events.Utils.Misc.getBitmapFromURIResized;
 import static com.example.viniciusmn.events.Utils.Misc.imageViewAnimatedChange;
 import static com.example.viniciusmn.events.Utils.Misc.readSharedTheme;
 import static com.example.viniciusmn.events.Utils.Misc.stringToDate;
@@ -121,7 +124,7 @@ public class createActivity extends AppCompatActivity {
         if(event.getImageURIString().isEmpty()){
             hideImageView(false);
         }else{
-            setImage(false);
+            loadImage();
         }
     }
 
@@ -167,12 +170,10 @@ public class createActivity extends AppCompatActivity {
 
     public void getImage(View v){
         Intent intent;
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
-            intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-            intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
-        }else{
-            intent = new Intent(Intent.ACTION_GET_CONTENT);
-        }
+
+        intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+
 
         intent.putExtra(Intent.EXTRA_LOCAL_ONLY,true);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -255,24 +256,19 @@ public class createActivity extends AppCompatActivity {
         }
     }
 
-    private void setImage(boolean transition){
+    private void loadImage(){
         image_textView.setVisibility(View.GONE);
         delete_imageBtn.setVisibility(View.VISIBLE);
 
-        Bitmap bitmap = getBitmapFromURI(this,imageUri);
-        if(bitmap==null){
-            hideImageView(false);
-            imageUri = null;
-            Event e = createEvent();
-            EventDatabase.getInstance(this).eventDAO().updateEvent(e);
-            Toast.makeText(this, R.string.image_error, Toast.LENGTH_SHORT).show();
+        BitmapWorkerTask task = new BitmapWorkerTask(this,imageUri);
+        task.execute();
+    }
+
+    private void setImage(Bitmap bitmap){
+        if(bitmap!=null){
+            imageViewAnimatedChange(this,imageView,bitmap);
         }else{
-            if(transition){
-                imageViewAnimatedChange(this,imageView,bitmap);
-            }else{
-                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                imageView.setImageBitmap(bitmap);
-            }
+            hideImageView(false);
         }
     }
 
@@ -292,18 +288,12 @@ public class createActivity extends AppCompatActivity {
                 guestList = (ArrayList<Person>) bundle.getSerializable(GUEST_LIST);
             }
         }else if(requestCode == RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK){
-//            imageUri = data.getData();
-//            setImage();
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
-                final int takeFlags = data.getFlags() & Intent.FLAG_GRANT_READ_URI_PERMISSION;
-                ContentResolver resolver = this.getContentResolver();
-                Uri tmp = data.getData();
-                resolver.takePersistableUriPermission(tmp,takeFlags);
-                imageUri = tmp;
-            }else{
-                imageUri = data.getData();
-            }
-            setImage(true);
+            final int takeFlags = data.getFlags() & Intent.FLAG_GRANT_READ_URI_PERMISSION;
+            ContentResolver resolver = this.getContentResolver();
+            Uri tmp = data.getData();
+            resolver.takePersistableUriPermission(tmp,takeFlags);
+            imageUri = tmp;
+            loadImage();
         }
     }
 
@@ -311,5 +301,27 @@ public class createActivity extends AppCompatActivity {
         date_editText.setText(dateToString(myCalendar.getTime()));
     }
 
+    private class BitmapWorkerTask extends AsyncTask<Void,Void,Void>{
 
+        private Bitmap bitmap;
+        private Context ctx;
+        private Uri imageUri;
+
+        public BitmapWorkerTask(Context ctx,Uri imageUri) {
+            this.ctx = ctx;
+            this.imageUri = imageUri;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            setImage(bitmap);
+            super.onPostExecute(aVoid);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            bitmap = getBitmapFromURIResized(ctx,imageUri,1024,300);
+            return null;
+        }
+    }
 }

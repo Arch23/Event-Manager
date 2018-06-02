@@ -14,7 +14,7 @@ import java.util.Objects;
 
 public class aboutActivity extends AppCompatActivity {
 
-    private int themeId;
+     private int themeId;
 
     public static void call(Context context){
         Intent intent = new Intent(context,aboutActivity.class);
@@ -62,8 +62,9 @@ public class aboutActivity extends AppCompatActivity {
         changeTheme(true,themeId);
 
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_about);
+
+        setTitle(R.string.about);
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 

@@ -8,7 +8,7 @@ import android.content.Context;
 
 import com.example.viniciusmn.events.Classes.Event;
 
-@Database(entities = {Event.class}, version = 5,exportSchema = false)
+@Database(entities = {Event.class}, version = 6,exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class EventDatabase extends RoomDatabase{
     private static EventDatabase INSTANCE;

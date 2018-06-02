@@ -28,18 +28,13 @@ public class Converters {
     }
 
     @TypeConverter
-    public static Date fromStringDate(String value){
-        try {
-            return stringToDate(value);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return new Date();
+    public static Date fromTimestamp(Long value){
+        return value == null? null: new Date(value);
     }
 
     @TypeConverter
-    public static String fromDateDate(Date date){
-        return dateToString(date);
+    public static Long dateToTimestamp(Date date){
+        return date == null? null : date.getTime();
     }
 //
 //    @TypeConverter
