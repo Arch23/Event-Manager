@@ -1,22 +1,30 @@
 package com.example.viniciusmn.events.Adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
+import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.viniciusmn.events.Classes.Event;
 import com.example.viniciusmn.events.MainActivity;
 import com.example.viniciusmn.events.R;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 import static com.example.viniciusmn.events.Utils.Misc.dateToString;
 import static com.example.viniciusmn.events.Utils.Misc.getBitmapFromURI;
+import static com.example.viniciusmn.events.Utils.Misc.imageViewAnimatedChange;
 
 public class EventsListAdapter extends BaseAdapter{
 
@@ -24,6 +32,8 @@ public class EventsListAdapter extends BaseAdapter{
     private ArrayList<Event> eventList;
     private ArrayList<Integer> selectedPositions;
     private boolean lightTheme;
+
+    private LruCache<String,Bitmap> mMemoryCache;
 
     private static LayoutInflater inflater = null;
 
@@ -33,6 +43,41 @@ public class EventsListAdapter extends BaseAdapter{
         inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
         selectedPositions = new ArrayList<>();
         this.lightTheme = lightTheme;
+
+        final int maxMemory = (int) (Runtime.getRuntime().maxMemory()/1024);
+
+        final int cacheSize = maxMemory/6;
+
+        mMemoryCache = new LruCache<String,Bitmap>(cacheSize){
+            @Override
+            protected int sizeOf(String key, Bitmap bitmap) {
+                return bitmap.getByteCount()/1024;
+            }
+        };
+    }
+
+    public void addBitmapToMemoryCache(String key,Bitmap bitmap){
+        if(getBitmapFromMenCache(key)==null){
+            mMemoryCache.put(key,bitmap);
+        }
+    }
+
+    public Bitmap getBitmapFromMenCache(String key){
+        return mMemoryCache.get(key);
+    }
+
+    public void loadBitmap(int redId, ImageView imageV, Uri imageUri){
+        final String imageKey = String.valueOf(redId);
+
+        final Bitmap bitmap = getBitmapFromMenCache(imageKey);
+        if(bitmap != null){
+            setBitmap(bitmap,imageV,false);
+        }else{
+            imageV.setScaleType(ImageView.ScaleType.CENTER);
+            imageV.setImageResource(android.R.drawable.ic_menu_report_image);
+            BitmapWorkerTask task = new BitmapWorkerTask(imageV,context,imageUri);
+            task.execute(redId);
+        }
     }
 
     @Override
@@ -65,6 +110,22 @@ public class EventsListAdapter extends BaseAdapter{
         }else{
             selectedPositions.add(position);
         }
+    }
+
+    private void setBitmap(Bitmap b, ImageView i,boolean transition){
+        if(b==null){
+            i.setScaleType(ImageView.ScaleType.CENTER);
+            i.setImageResource(android.R.drawable.ic_menu_report_image);
+        }else{
+            if(transition){
+                imageViewAnimatedChange(context,i,b);
+            }else{
+                i.setImageBitmap(b);
+                i.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+            }
+        }
+
     }
 
     public ArrayList<Integer> getSelectedPositions() {
@@ -107,9 +168,8 @@ public class EventsListAdapter extends BaseAdapter{
             holder.event_imageView.setVisibility(View.GONE);
             holder.event_imageView.setImageDrawable(null);
         }else{
-            holder.event_imageView.setImageBitmap(getBitmapFromURI(context,currentEvent.getImageURI()));
+            loadBitmap(currentEvent.getUid(),holder.event_imageView,currentEvent.getImageURI());
             holder.event_imageView.setVisibility(View.VISIBLE);
-//            setTopCrop(convertView,R.id.event_imageView);
         }
 
         holder.event_name.setText(currentEvent.getName());
@@ -119,5 +179,42 @@ public class EventsListAdapter extends BaseAdapter{
         holder.event_invited.setText(context.getString(R.string.confirmed,currentEvent.getConfirmedInvited(),currentEvent.getInvitedSize()));
 
         return convertView;
+    }
+
+    class BitmapWorkerTask extends AsyncTask<Integer,Void,Void> {
+
+        private ImageView imageV;
+        private Context ctx;
+        private Uri imageUri;
+        private Bitmap bitmap;
+
+        public BitmapWorkerTask(ImageView imageV, Context ctx, Uri imageUri) {
+            this.imageV = imageV;
+            this.ctx = ctx;
+            this.imageUri = imageUri;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            setBitmap(bitmap,imageV,true);
+            super.onPostExecute(aVoid);
+        }
+
+        @Override
+        protected Void doInBackground(Integer... integers) {
+            Bitmap bitmap = getBitmapFromURI(ctx,imageUri);
+            if(bitmap != null){
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+
+                bitmap.compress(Bitmap.CompressFormat.JPEG,60,stream);
+
+                byte[] byteArray = stream.toByteArray();
+                bitmap = BitmapFactory.decodeByteArray(byteArray,0,byteArray.length);
+
+                addBitmapToMemoryCache(String.valueOf(integers[0]),bitmap);
+            }
+            this.bitmap = bitmap;
+            return null;
+        }
     }
 }

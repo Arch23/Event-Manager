@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.viniciusmn.events.Classes.Event;
 import com.example.viniciusmn.events.Classes.Person;
+import com.example.viniciusmn.events.DAO.EventDatabase;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -83,14 +85,14 @@ public class createActivity extends AppCompatActivity {
         Bundle bundle = intent.getExtras();
 
         if (bundle != null) {
+            EDIT = true;
             fillActivity((Event) bundle.getSerializable(MainActivity.EVENT_OBJ));
             setTitle(getString(R.string.create_edit_title));
             create_btn.setText(R.string.create_btn_change);
-            EDIT = true;
         } else {
+            EDIT = false;
             setTitle(getString(R.string.create_new_title));
             create_btn.setText(R.string.create_btn_create);
-            EDIT = false;
         }
     }
 
@@ -172,7 +174,7 @@ public class createActivity extends AppCompatActivity {
     public void hideImageView(boolean transition){
         imageUri = null;
         if(transition){
-            imageViewAnimatedChange(this,imageView,android.R.drawable.ic_menu_report_image);
+            imageViewAnimatedChange(this,imageView);
         }else{
             imageView.setScaleType(ImageView.ScaleType.CENTER);
             imageView.setImageDrawable(getDrawable(android.R.drawable.ic_menu_report_image));
@@ -242,13 +244,21 @@ public class createActivity extends AppCompatActivity {
     private void setImage(boolean transition){
         image_textView.setVisibility(View.GONE);
         delete_imageBtn.setVisibility(View.VISIBLE);
-        imageView.setVisibility(View.VISIBLE);
 
-        if(transition){
-            imageViewAnimatedChange(this,imageView,getBitmapFromURI(this,imageUri));
+        Bitmap bitmap = getBitmapFromURI(this,imageUri);
+        if(bitmap==null){
+            hideImageView(false);
+            imageUri = null;
+            Event e = createEvent();
+            EventDatabase.getInstance(this).eventDAO().updateEvent(e);
+            Toast.makeText(this, R.string.image_error, Toast.LENGTH_SHORT).show();
         }else{
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setImageBitmap(getBitmapFromURI(this,imageUri));
+            if(transition){
+                imageViewAnimatedChange(this,imageView,bitmap);
+            }else{
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                imageView.setImageBitmap(bitmap);
+            }
         }
     }
 

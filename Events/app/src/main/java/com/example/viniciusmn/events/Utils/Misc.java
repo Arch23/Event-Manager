@@ -54,27 +54,11 @@ public abstract class Misc {
         return null;
     }
 
-    public static void setTopCrop(View view,int imageviewID){
-        ImageView iview = view.findViewById(imageviewID);
-        Matrix matrix = iview.getImageMatrix();
-        float imageW = iview.getDrawable().getIntrinsicWidth();
-        int screenW = view.getResources().getDisplayMetrics().widthPixels;
-        float scaleRatio = screenW/imageW;
-
-        matrix.postScale(scaleRatio,scaleRatio);
-        iview.setImageMatrix(matrix);
-
+    public static void imageViewAnimatedChange(Context c, final ImageView v){
+        imageViewAnimatedChange(c,v,null);
     }
 
     public static void imageViewAnimatedChange(Context c, final ImageView v, final Bitmap new_image) {
-        imageViewAnimatedChange(c,v,new_image,0);
-    }
-
-    public static void imageViewAnimatedChange(Context c, final ImageView v, final int drawing) {
-        imageViewAnimatedChange(c,v,null,drawing);
-    }
-
-    public static void imageViewAnimatedChange(Context c, final ImageView v, final Bitmap new_image,final int drawing) {
         final Animation anim_out = AnimationUtils.loadAnimation(c, android.R.anim.fade_out);
         final Animation anim_in  = AnimationUtils.loadAnimation(c, android.R.anim.fade_in);
         anim_out.setAnimationListener(new Animation.AnimationListener()
@@ -88,7 +72,7 @@ public abstract class Misc {
                     v.setImageBitmap(new_image);
                 }else{
                     v.setScaleType(ImageView.ScaleType.CENTER);
-                    v.setImageDrawable(c.getDrawable(drawing));
+                    v.setImageDrawable(c.getDrawable(android.R.drawable.ic_menu_report_image));
                 }
                 anim_in.setAnimationListener(new Animation.AnimationListener() {
                     @Override public void onAnimationStart(Animation animation) {}
@@ -99,10 +83,5 @@ public abstract class Misc {
             }
         });
         v.startAnimation(anim_out);
-    }
-
-    public static Bitmap base64ToBitmap(String base64Str){
-        byte[] decodedString = Base64.decode(base64Str,Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(decodedString,0,decodedString.length);
     }
 }
