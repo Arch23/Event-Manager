@@ -38,16 +38,6 @@ public abstract class Misc {
         return theme;
     }
 
-//    public static Bitmap getBitmapFromURI(Context ctx,Uri imageUri){
-//        try {
-//            InputStream imageStream = ctx.getContentResolver().openInputStream(imageUri);
-//            return BitmapFactory.decodeStream(imageStream);
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
-
     public static Bitmap getBitmapFromURIResized(Context ctx,Uri imageUri,int reqWidth, int reqHeight){
 
         try {
@@ -62,7 +52,15 @@ public abstract class Misc {
 
             options.inJustDecodeBounds = false;
 
-            return BitmapFactory.decodeStream(imageStream,null,options);
+            Bitmap bitmap = BitmapFactory.decodeStream(imageStream,null,options);
+
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+
+            bitmap.compress(Bitmap.CompressFormat.JPEG,60,stream);
+
+            byte[] byteArray = stream.toByteArray();
+
+            return BitmapFactory.decodeByteArray(byteArray,0,byteArray.length);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

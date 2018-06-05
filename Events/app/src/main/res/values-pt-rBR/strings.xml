@@ -43,7 +43,7 @@
     <string name="event_image">Imagem do evento</string>
     <string name="add_image">Adicionar imagem</string>
     <string name="delete_event">Deletar imagem</string>
-    <string name="event_saved">Evento salvado</string>
+    <string name="event_saved">Evento salvo</string>
     <string name="event_created">Evento criado</string>
     <string name="image_error">Erro ao carregar a imagem</string>
 </resources>

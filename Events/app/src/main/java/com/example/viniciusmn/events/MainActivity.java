@@ -3,6 +3,7 @@ package com.example.viniciusmn.events;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.ActionMode;
@@ -10,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AbsListView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.viniciusmn.events.Adapter.EventsListAdapter;
 import com.example.viniciusmn.events.Classes.Event;
@@ -106,9 +108,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void populateListView(){
-        events = new ArrayList<>(EventDatabase.getInstance(this).eventDAO().getAll());
-        list_adapter = new EventsListAdapter(this, events,lightTheme);
-        contentListView.setAdapter(list_adapter);
+        AsyncTask.execute(()->{
+            events = new ArrayList<>(EventDatabase.getInstance(this).eventDAO().getAll());
+            list_adapter = new EventsListAdapter(this, events,lightTheme);
+            MainActivity.this.runOnUiThread(()->{
+                contentListView.setAdapter(list_adapter);
+            });
+        });
     }
 
     private void deleteEvents(){
@@ -118,8 +124,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void deleteEvent(Event event){
-        EventDatabase.getInstance(this).eventDAO().deleteEvent(event);
-        populateListView();
+        AsyncTask.execute(()->{
+            EventDatabase.getInstance(this).eventDAO().deleteEvent(event);
+            populateListView();
+        });
     }
 
     @Override
@@ -166,13 +174,18 @@ public class MainActivity extends AppCompatActivity {
 
             if(bundle != null){
                 Event event = (Event) bundle.getSerializable(EVENT_OBJ);
-                if(requestCode == NEW_EVENT){
-                    EventDatabase.getInstance(this).eventDAO().insertEvent(event);
-                }else{
-                    EventDatabase.getInstance(this).eventDAO().updateEvent(event);
-                    selectedPosition = -1;
-                }
-                populateListView();
+                AsyncTask.execute(()->{
+                    if(requestCode == NEW_EVENT){
+                        EventDatabase.getInstance(this).eventDAO().insertEvent(event);
+                    }else{
+                        EventDatabase.getInstance(this).eventDAO().updateEvent(event);
+                        selectedPosition = -1;
+                    }
+                    MainActivity.this.runOnUiThread(()->{
+                        Toast.makeText(this,requestCode==NEW_EVENT?R.string.event_created: R.string.event_saved, Toast.LENGTH_SHORT).show();
+                    });
+                    populateListView();
+                });
             }
         }
     }

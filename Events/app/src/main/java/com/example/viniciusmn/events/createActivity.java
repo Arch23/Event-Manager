@@ -97,6 +97,8 @@ public class createActivity extends AppCompatActivity {
         imageUri = null;
         guestList = new ArrayList<>();
 
+        date_editText.setText(dateToString(Calendar.getInstance().getTime()));
+
         Intent intent = getIntent();
 
         Bundle bundle = intent.getExtras();
@@ -116,6 +118,7 @@ public class createActivity extends AppCompatActivity {
     private void fillActivity(Event event) {
         name_editText.setText(event.getName());
         date_editText.setText(dateToString(event.getDate()));
+        myCalendar.setTime(event.getDate());
         local_editText.setText(event.getPlace());
         description_editText.setText(event.getDescription());
         guestList = event.getInvited();
@@ -151,10 +154,8 @@ public class createActivity extends AppCompatActivity {
             Date date = stringToDate(date_editText.getText().toString());
             Event newEvent;
             if (EDIT) {
-                Toast.makeText(this, R.string.event_saved, Toast.LENGTH_SHORT).show();
                 newEvent = new Event(uID, name_editText.getText().toString(), date, local_editText.getText().toString(), description_editText.getText().toString(), guestList,imageUri==null?"":imageUri.toString());
             } else {
-                Toast.makeText(this, R.string.event_created, Toast.LENGTH_SHORT).show();
                 newEvent = new Event(name_editText.getText().toString(), date, local_editText.getText().toString(), description_editText.getText().toString(), guestList,imageUri==null?"":imageUri.toString());
             }
             return newEvent;
