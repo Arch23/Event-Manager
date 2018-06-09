@@ -8,7 +8,6 @@ import android.arch.persistence.room.Update;
 
 import com.example.viniciusmn.events.Classes.Event;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Dao

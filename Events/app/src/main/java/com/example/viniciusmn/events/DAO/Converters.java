@@ -7,12 +7,8 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
-
-import static com.example.viniciusmn.events.Utils.Misc.dateToString;
-import static com.example.viniciusmn.events.Utils.Misc.stringToDate;
 
 public class Converters {
     @TypeConverter

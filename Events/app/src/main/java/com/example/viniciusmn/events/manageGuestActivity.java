@@ -7,7 +7,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.ActionMode;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,6 +21,7 @@ import com.example.viniciusmn.events.Adapter.GuestListAdapter;
 import com.example.viniciusmn.events.Classes.Person;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static com.example.viniciusmn.events.Utils.Misc.readSharedTheme;
 
@@ -160,7 +160,7 @@ public class manageGuestActivity extends AppCompatActivity {
     }
 
     private void changeGuest(){
-        if(newName != guestList.get(selectedPosition).getName()){
+        if(!Objects.equals(newName, guestList.get(selectedPosition).getName())){
 //            guestList.set(selectedPosition,newName);
             guestList.get(selectedPosition).setName(newName);
             guestList.get(selectedPosition).setConfirmed(newConfirmed);

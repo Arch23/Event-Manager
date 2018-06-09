@@ -111,9 +111,7 @@ public class MainActivity extends AppCompatActivity {
         AsyncTask.execute(()->{
             events = new ArrayList<>(EventDatabase.getInstance(this).eventDAO().getAll());
             list_adapter = new EventsListAdapter(this, events,lightTheme);
-            MainActivity.this.runOnUiThread(()->{
-                contentListView.setAdapter(list_adapter);
-            });
+            MainActivity.this.runOnUiThread(()-> contentListView.setAdapter(list_adapter));
         });
     }
 
@@ -181,9 +179,7 @@ public class MainActivity extends AppCompatActivity {
                         EventDatabase.getInstance(this).eventDAO().updateEvent(event);
                         selectedPosition = -1;
                     }
-                    MainActivity.this.runOnUiThread(()->{
-                        Toast.makeText(this,requestCode==NEW_EVENT?R.string.event_created: R.string.event_saved, Toast.LENGTH_SHORT).show();
-                    });
+                    MainActivity.this.runOnUiThread(()-> Toast.makeText(this,requestCode==NEW_EVENT?R.string.event_created: R.string.event_saved, Toast.LENGTH_SHORT).show());
                     populateListView();
                 });
             }

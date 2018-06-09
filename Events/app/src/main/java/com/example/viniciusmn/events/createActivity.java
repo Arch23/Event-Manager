@@ -6,10 +6,8 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -24,12 +22,12 @@ import android.widget.Toast;
 
 import com.example.viniciusmn.events.Classes.Event;
 import com.example.viniciusmn.events.Classes.Person;
-import com.example.viniciusmn.events.DAO.EventDatabase;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 import static com.example.viniciusmn.events.Utils.Misc.dateToString;
 import static com.example.viniciusmn.events.Utils.Misc.getBitmapFromURIResized;
@@ -70,7 +68,7 @@ public class createActivity extends AppCompatActivity {
         readSharedTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         image_textView = findViewById(R.id.image_textView);
         delete_imageBtn = findViewById(R.id.delete_imageBtn);
         delete_imageBtn.setVisibility(View.GONE);
@@ -80,19 +78,16 @@ public class createActivity extends AppCompatActivity {
         description_editText = findViewById(R.id.description_editText);
         create_btn = findViewById(R.id.create_btn);
         imageView = findViewById(R.id.imageView);
-        imageView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if(imageUri != null){
-                    Intent intent = new Intent();
-                    intent.setAction(Intent.ACTION_VIEW);
-                    intent.setDataAndType(imageUri,"image/*");
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    startActivity(intent);
-                }
-
-                return true;
+        imageView.setOnLongClickListener(v -> {
+            if(imageUri != null){
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.setDataAndType(imageUri,"image/*");
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                startActivity(intent);
             }
+
+            return true;
         });
         imageUri = null;
         guestList = new ArrayList<>();
@@ -105,7 +100,7 @@ public class createActivity extends AppCompatActivity {
 
         if (bundle != null) {
             EDIT = true;
-            fillActivity((Event) bundle.getSerializable(MainActivity.EVENT_OBJ));
+            fillActivity((Event) Objects.requireNonNull(bundle.getSerializable(MainActivity.EVENT_OBJ)));
             setTitle(getString(R.string.create_edit_title));
             create_btn.setText(R.string.create_btn_change);
         } else {
@@ -292,7 +287,7 @@ public class createActivity extends AppCompatActivity {
             final int takeFlags = data.getFlags() & Intent.FLAG_GRANT_READ_URI_PERMISSION;
             ContentResolver resolver = this.getContentResolver();
             Uri tmp = data.getData();
-            resolver.takePersistableUriPermission(tmp,takeFlags);
+            resolver.takePersistableUriPermission(Objects.requireNonNull(tmp),takeFlags);
             imageUri = tmp;
             loadImage();
         }

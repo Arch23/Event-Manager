@@ -16,9 +16,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.text.DateFormat;
-import java.text.Format;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public abstract class Misc {
@@ -48,7 +46,7 @@ public abstract class Misc {
             BitmapFactory.decodeStream(imageStream,null,options);
             imageStream = ctx.getContentResolver().openInputStream(imageUri);
 
-            options.inSampleSize = calculateSample(options,reqWidth,reqWidth);
+            options.inSampleSize = calculateSample(options,reqWidth,reqHeight);
 
             options.inJustDecodeBounds = false;
 

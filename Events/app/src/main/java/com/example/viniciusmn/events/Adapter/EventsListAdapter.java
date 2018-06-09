@@ -2,7 +2,6 @@ package com.example.viniciusmn.events.Adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
@@ -13,16 +12,11 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.viniciusmn.events.Classes.Event;
 import com.example.viniciusmn.events.MainActivity;
 import com.example.viniciusmn.events.R;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 import static com.example.viniciusmn.events.Utils.Misc.dateToString;
@@ -43,7 +37,7 @@ public class EventsListAdapter extends BaseAdapter{
     public EventsListAdapter(MainActivity mainActivity, ArrayList<Event> eventList, boolean lightTheme){
         this.eventList = eventList;
         this.context = mainActivity;
-        inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         selectedPositions = new ArrayList<>();
         this.lightTheme = lightTheme;
 

@@ -1,16 +1,13 @@
 package com.example.viniciusmn.events.Adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.viniciusmn.events.Classes.Person;
 import com.example.viniciusmn.events.R;
@@ -30,7 +27,7 @@ public class GuestListAdapter extends BaseAdapter {
         this.context = context;
         this.guestList = guestList;
         this.lightTheme = lightTheme;
-        inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         selectedPositions = new ArrayList<>();
     }
 
@@ -87,9 +84,7 @@ public class GuestListAdapter extends BaseAdapter {
 
         holder.guest_checkListView.setChecked(guestList.get(position).isConfirmed());
 
-        holder.guest_checkListView.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            guestList.get(position).setConfirmed(isChecked);
-        });
+        holder.guest_checkListView.setOnCheckedChangeListener((buttonView, isChecked) -> guestList.get(position).setConfirmed(isChecked));
 
         if(selectedPositions.contains(position)){
             int light = ContextCompat.getColor(context, R.color.CardBackgroundSelected),
